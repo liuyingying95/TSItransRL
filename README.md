@@ -3,7 +3,7 @@
 TSItransRL is a Python codebase for **goal-directed molecular generation** with a staged workflow:
 
 1. **Teacher model training / update** (`1_train.py`)
-2. **Distillation to a Hugging Face GPT-2 student** (`2_distill.py`)
+2. **Distillation to a GPT student model** (`2_distill.py`)
 3. **Molecule generation + evaluation** (`3_generate.py`, `eval_script.py`, `1_1_gen.py`)
 
 The repository is currently configured mainly for the **JNK3 + GSK3 multi-objective task** (with QED/SA constraints), while parts of the code still include commented alternatives for DRD2.
@@ -12,8 +12,8 @@ The repository is currently configured mainly for the **JNK3 + GSK3 multi-object
 
 ## Repository Structure
 
-- `1_train.py` — trains/continues a custom conditional Transformer decoder (`MoleGPT` in `model.py`).
-- `1_1_gen.py` — generates molecules from `MoleGPT` checkpoints and computes MOSES/property metrics.
+- `1_train.py` — trains/continues a custom conditional Transformer decoder (In `model.py`).
+- `1_1_gen.py` — generates molecules from checkpoints and computes MOSES/property metrics.
 - `2_distill.py` — fine-tunes/distills a GPT-2 LM (`GPT2LMHeadModel`) on selected generated molecules.
 - `3_generate.py` — samples from the distilled GPT model and evaluates outputs.
 - `eval_script.py` — shared evaluation logic (`valid_metric`) for validity/novelty/diversity/success metrics.
@@ -29,7 +29,7 @@ The repository is currently configured mainly for the **JNK3 + GSK3 multi-object
 At a high level, the code uses molecular SMILES generation conditioned by task labels and iteratively improves generation quality:
 
 - Label molecules as `positive`/`negative` using task constraints.
-- Train/update a conditional generator (`MoleGPT`).
+- Train/update a conditional generator.
 - Generate candidate molecules.
 - Filter/select candidates according to activity + drug-likeness constraints.
 - Distill selected molecules into a GPT-2 style student model.
@@ -130,7 +130,7 @@ This script:
 - Computes MOSES + property statistics
 - Writes generated molecules/results to configured CSV/TXT paths
 
-### 3) Distill into GPT-2 student
+### 3) Distill into student
 
 ```bash
 python 2_distill.py
